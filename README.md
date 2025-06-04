@@ -1,6 +1,15 @@
 # server_backup
 解析サーバーからバックアップサーバーに解析データをコピー(upload)、またはバックアップしたデータを解析サーバにコピー(download)する。
 
+## バックアップデータ
+### **eWES**
+
+<img src="https://github.com/user-attachments/assets/19e912a4-cdfa-45a2-b4a2-57be33a9a7d7" width="500">
+
+### **WTS**
+
+<img src="https://github.com/user-attachments/assets/41c66ec0-07b7-4641-b718-405e302d3370" width="500">
+
 ## 変数の定義(共通)
 ```
 img=/data1/labTools/labTools.sif
