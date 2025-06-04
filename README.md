@@ -26,14 +26,14 @@ optional arguments:
 ```
 singularity exec --disable-cache --bind /data1 $img python $SCRIPT <command> --help
 ```
-| command     | 概要                                                |
-|:------------|:---------------------------------------------------|
-|upload, up   ||
-|download, dl ||
+| command     | 概要                                                       |
+|:------------|:-----------------------------------------------------------|
+|upload, up   |解析サーバーからバックアップサーバーに解析データをコピーする|
+|download, dl |バックアップしたデータを解析サーバにコピーする              |
 
-# 1\. データのバックアップ（アップロード）
-解析時に作成されたデータを /data2 にマウントされたバックアップサーバーにコピーする。
-## オプションの詳細
+## 1\. データのバックアップ（アップロード）
+解析時に作成されたデータをバックアップサーバーにコピーする。
+### オプションの詳細
 ```
 $ singularity exec --disable-cache --bind /data1 $img python $SCRIPT up --help
 usage: server_backup.py upload [-h] --flowcellid FLOWCELLID [--project_type {both,WTS,eWES}] [--inclusion INCLUSION] [--exclusion EXCLUSION]
@@ -54,12 +54,35 @@ optional arguments:
   --forwarding FORWARDING, -fw FORWARDING
                         forwarding directory path (default: /data2/backup/result)
 ```
-| option           | 概要           |default         |
-|:-----------------|:---------------|:---------------|
+| option           | 概要           |default            |
+|:-----------------|:---------------|:------------------|
 |--flowcellid/-fc  |バッチ固有のID。OncoStationに掲載されている9桁の半角英数字  |None |
 |--project_type/-t |解析種別。bath,eWES,WTSから選択する |both                   |
 |--inclusion/-i    |アップロードするSample IDを指定。カンマ区切りで複数指定可能 |None |
 |--exclusion/-e    |除外するSample IDを指定。カンマ区切りで複数指定可能         |None |
 |--directory/-d    |解析フォルダの親ディレクトリ        |/data1/data/result     |
 |--forwarding/-fw  |バックアップ先のディレクトリパス　　|/data2/backup/result   |
+
+## 2\. バックアップデータの復帰（ダウンロード）
+バックアップサーバーに保存したデータを解析サーバーにコピーする。
+### オプションの詳細
+```
+$ singularity exec --disable-cache --bind /data1 $img python $SCRIPT dl --help
+usage: server_backup.py download [-h] --sample SAMPLE [--directory DIRECTORY] [--forwarding FORWARDING]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --sample SAMPLE, -s SAMPLE
+                        sample IDs to download (comma separated) (default: None)
+  --directory DIRECTORY, -d DIRECTORY
+                        output directory (default: /data1/work/backup_storage)
+  --forwarding FORWARDING, -fw FORWARDING
+                        forwarding directory path (default: /data2/backup/result)
+```
+| option          | 概要                                 |default                    |
+|:----------------|:-------------------------------------|:--------------------------|
+|--sample/-s      |Sample ID。カンマ区切りで複数指定可能 |None                       |
+|--directory/-d   |データの復帰場所                      |/data1/work/backup_storage |
+|--forwarding/-fw |バックアップ先のディレクトリパス      |/data2/backup/result       |
+
 
