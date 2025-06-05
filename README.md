@@ -1,13 +1,6 @@
 # server_backup
 解析サーバーからバックアップサーバーに解析データをコピー(upload)、またはバックアップしたデータを解析サーバにコピー(download)する。
 
-## バックアップデータ
-### **eWES**
-<img src="https://github.com/user-attachments/assets/ecc3234c-697f-40ed-94b2-be9ffd26a245" width="1000">
-
-### **WTS**
-<img src="https://github.com/user-attachments/assets/8a44e398-ef35-470d-8eca-f4e920f1f760" width="1000">
-
 ## 変数の定義(共通)
 ```
 img=/data1/labTools/labTools.sif
@@ -40,6 +33,13 @@ singularity exec --disable-cache --bind /data1 $img python $SCRIPT <command> --h
 
 ## 1\. データのバックアップ（アップロード）
 解析時に作成されたデータをバックアップサーバーにコピーし、チェックサムを作成する。
+### 転送されるデータ
+**【eWES】**
+<img src="https://github.com/user-attachments/assets/ecc3234c-697f-40ed-94b2-be9ffd26a245" width="1000">
+
+**【WTS】**
+<img src="https://github.com/user-attachments/assets/8a44e398-ef35-470d-8eca-f4e920f1f760" width="1000">
+
 ### オプションの詳細
 ```
 $ singularity exec --disable-cache --bind /data1 $img python $SCRIPT up --help
@@ -71,7 +71,14 @@ optional arguments:
 |--forwarding/-fw  |バックアップ先のディレクトリパス　　|/data2/backup/result   |
 
 ## 2\. バックアップデータの復帰（ダウンロード）
-バックアップサーバーに保存したデータを解析サーバーにコピーし、チェックサムを作成して比較する。
+バックアップサーバーに保存したデータを解析サーバーにコピーし、チェックサムを作成する。
+### 転送されるデータ
+**【eWES】**
+<img src="https://github.com/user-attachments/assets/988a6b31-d815-4a98-9f0e-06c662997aba" width="1000">
+
+**【WTS】**
+<img src="https://github.com/user-attachments/assets/6bffbd1d-6b5c-496b-bc07-19c167a7f27b" width="1000">
+
 ### オプションの詳細
 ```
 $ singularity exec --disable-cache --bind /data1 $img python $SCRIPT dl --help
