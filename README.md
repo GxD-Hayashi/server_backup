@@ -3,10 +3,10 @@
 
 ## バックアップデータ
 ### **eWES**
-<img src="https://github.com/user-attachments/assets/8c548fa4-b020-455b-897a-c4dd909d591f" width="1000">
+<img src="https://github.com/user-attachments/assets/ecc3234c-697f-40ed-94b2-be9ffd26a245" width="1000">
 
 ### **WTS**
-<img src="https://github.com/user-attachments/assets/52da70a8-9260-44f2-8557-cfdb74d4f8ed" width="1000">
+<img src="https://github.com/user-attachments/assets/8a44e398-ef35-470d-8eca-f4e920f1f760" width="1000">
 
 ## 変数の定義(共通)
 ```
@@ -33,13 +33,13 @@ optional arguments:
 ```
 singularity exec --disable-cache --bind /data1 $img python $SCRIPT <command> --help
 ```
-| command     | 概要                                                       |
-|:------------|:-----------------------------------------------------------|
-|upload, up   |解析サーバーからバックアップサーバーに解析データをコピーする|
+| command     | 概要                                                   |
+|:------------|:-------------------------------------------------------|
+|upload, up   |解析サーバーからバックアップサーバーに解析データをコピーする |
 |download, dl |バックアップしたデータを解析サーバにコピーする              |
 
 ## 1\. データのバックアップ（アップロード）
-解析時に作成されたデータをバックアップサーバーにコピーする。
+解析時に作成されたデータをバックアップサーバーにコピーし、チェックサムを作成する。
 ### オプションの詳細
 ```
 $ singularity exec --disable-cache --bind /data1 $img python $SCRIPT up --help
@@ -71,7 +71,7 @@ optional arguments:
 |--forwarding/-fw  |バックアップ先のディレクトリパス　　|/data2/backup/result   |
 
 ## 2\. バックアップデータの復帰（ダウンロード）
-バックアップサーバーに保存したデータを解析サーバーにコピーする。
+バックアップサーバーに保存したデータを解析サーバーにコピーし、チェックサムを作成して比較する。
 ### オプションの詳細
 ```
 $ singularity exec --disable-cache --bind /data1 $img python $SCRIPT dl --help
@@ -86,10 +86,10 @@ optional arguments:
   --forwarding FORWARDING, -fw FORWARDING
                         forwarding directory path (default: /data2/backup/result)
 ```
-| option          | 概要                                 |default                    |
-|:----------------|:-------------------------------------|:--------------------------|
+| option          | 概要                               |default                    |
+|:----------------|:-----------------------------------|:--------------------------|
 |--sample/-s      |Sample ID。カンマ区切りで複数指定可能 |None                       |
-|--directory/-d   |データの復帰場所                      |/data1/work/backup_storage |
+|--directory/-d   |データの復帰場所                     |/data1/work/backup_storage |
 |--forwarding/-fw |バックアップ先のディレクトリパス      |/data2/backup/result       |
 
 
