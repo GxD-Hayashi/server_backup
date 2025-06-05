@@ -3,10 +3,10 @@
 
 ## バックアップデータ
 ### **eWES**
-<img src="https://github.com/user-attachments/assets/7aec0dd7-eee1-48c9-91f2-101ad5687f81" width="1000">
+<img src="https://github.com/user-attachments/assets/8c548fa4-b020-455b-897a-c4dd909d591f" width="1000">
 
 ### **WTS**
-<img src="https://github.com/user-attachments/assets/d9b7fcb0-7a4c-4d18-bca8-195c6eb73940" width="1000">
+<img src="https://github.com/user-attachments/assets/52da70a8-9260-44f2-8557-cfdb74d4f8ed" width="1000">
 
 ## 変数の定義(共通)
 ```
