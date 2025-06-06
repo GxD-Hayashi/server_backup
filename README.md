@@ -1,5 +1,9 @@
 # server_backup
 解析サーバーからバックアップサーバーに解析データをコピー(upload)、またはバックアップしたデータを解析サーバにコピー(download)する。
+| command     | 概要                                                   |
+|:------------|:-------------------------------------------------------|
+|upload, up   |解析サーバーからバックアップサーバーに解析データをコピーする |
+|download, dl |バックアップしたデータを解析サーバにコピーする              |
 
 ## 変数の定義(共通)
 ```
@@ -26,10 +30,6 @@ optional arguments:
 ```
 singularity exec --disable-cache --bind /data1 $img python $SCRIPT <command> --help
 ```
-| command     | 概要                                                   |
-|:------------|:-------------------------------------------------------|
-|upload, up   |解析サーバーからバックアップサーバーに解析データをコピーする |
-|download, dl |バックアップしたデータを解析サーバにコピーする              |
 
 ## 1\. データのバックアップ（アップロード）
 解析時に作成されたデータをバックアップサーバーにコピーし、チェックサムを作成する。
@@ -61,14 +61,14 @@ optional arguments:
   --forwarding FORWARDING, -fw FORWARDING
                         forwarding directory path (default: /data2/backup/result)
 ```
-| option           | 概要           |default            |
-|:-----------------|:---------------|:------------------|
-|--flowcellid/-fc  |バッチ固有のID。OncoStationに掲載されている9桁の半角英数字  |None |
-|--project_type/-t |解析種別。bath,eWES,WTSから選択する |both                   |
-|--inclusion/-i    |アップロードするSample IDを指定。カンマ区切りで複数指定可能 |None |
-|--exclusion/-e    |除外するSample IDを指定。カンマ区切りで複数指定可能         |None |
-|--directory/-d    |解析フォルダの親ディレクトリ        |/data1/data/result     |
-|--forwarding/-fw  |バックアップ先のディレクトリパス　　|/data2/backup/result   |
+| option           |required | 概要           |default            |
+|:-----------------|:-------:|:---------------|:------------------|
+|--flowcellid/-fc  |True     |バッチ固有のID。OncoStationに掲載されている9桁の半角英数字  |None |
+|--project_type/-t |False    |解析種別。bath,eWES,WTSから選択する |both                   |
+|--inclusion/-i    |False    |アップロードするSample IDを指定。カンマ区切りで複数指定可能 |None |
+|--exclusion/-e    |False    |除外するSample IDを指定。カンマ区切りで複数指定可能         |None |
+|--directory/-d    |False    |解析フォルダの親ディレクトリ        |/data1/data/result     |
+|--forwarding/-fw  |False    |バックアップ先のディレクトリパス　　|/data2/backup/result   |
 
 ## 2\. バックアップデータの復帰（ダウンロード）
 バックアップサーバーに保存したデータを解析サーバーにコピーし、チェックサムを作成する。
@@ -93,10 +93,9 @@ optional arguments:
   --forwarding FORWARDING, -fw FORWARDING
                         forwarding directory path (default: /data2/backup/result)
 ```
-| option          | 概要                               |default                    |
-|:----------------|:-----------------------------------|:--------------------------|
-|--sample/-s      |Sample ID。カンマ区切りで複数指定可能 |None                       |
-|--directory/-d   |データの復帰場所                     |/data1/work/backup_storage |
-|--forwarding/-fw |バックアップ先のディレクトリパス      |/data2/backup/result       |
-
+| option          |required | 概要                               |default                    |
+|:----------------|:-------:|:-----------------------------------|:--------------------------|
+|--sample/-s      |True     |Sample ID。カンマ区切りで複数指定可能 |None                       |
+|--directory/-d   |False    |データを復帰させる場所               |/data1/work/backup_storage |
+|--forwarding/-fw |False    |バックアップ先のディレクトリパス      |/data2/backup/result       |
 
