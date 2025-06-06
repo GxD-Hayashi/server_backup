@@ -66,24 +66,49 @@ def run_upload(args):
     df_info = df_info.sort_values('SAMPLE_ID')
     for i, item in df_info.iterrows() :
 
-        fcDir = SearchDir(item['sub_name'], Path(directory + '/' + item['PRJ_TYPE']))
-        rawDir = os.path.join(directory, item['PRJ_TYPE'], fcDir, item['SAMPLE_ID'])
-        forDir = os.path.join(forwarding, item['PRJ_TYPE'], fcDir, item['SAMPLE_ID'])
+        while True :
+            fcDir = SearchDir(item['sub_name'], Path(directory + '/' + item['PRJ_TYPE']))
+            if fcDir is None : init('Analysis folder not found.')
+            rawDir = os.path.join(directory, item['PRJ_TYPE'], fcDir, item['SAMPLE_ID'])
+            forDir = os.path.join(forwarding, item['PRJ_TYPE'], fcDir, item['SAMPLE_ID'])
 
-        # FASTQ
-        FILES_FQ = [ os.path.join(rawDir,'Fastq',file) for file in Path(os.path.join(rawDir,'Fastq')).iterdir() if file.name.endswith('fastq.gz') ]
+            # FASTQ
+            if not os.path.isdir(os.path.join(rawDir,'Fastq')) :
+                print('Fastq folder does not exist. Cancel transfer.: ' + item['SAMPLE_ID'])
+                break
 
-        # report, summarized
-        FILES_SUM = [ os.path.join(rawDir,'Summary',file) for file in Path(os.path.join(rawDir,'Summary')).iterdir() if 'summarized' in file.name ]
-        FILES_REP = [ os.path.join(rawDir,'Summary',item['SAMPLE_ID'] + '.report.'+file) for file in ['pdf','json'] ]
+            FILES_FQ = [ os.path.join(rawDir,'Fastq',file) for file in Path(os.path.join(rawDir,'Fastq')).iterdir() if file.name.endswith('fastq.gz') ]
 
-        if item['PRJ_TYPE'] == 'eWES':
-            FILE_BAM = os.path.join(rawDir,'Preprocessing','align','.'.join([item['SAMPLE_ID'],'tumour','aligned','bam']))
-            FILE_VCF = os.path.join(rawDir,'SNV','somatic',item['SAMPLE_ID']+'_mutect2_freebayes_lofreq_vote_res.exome.vcf')
-            sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM, FILE_VCF], forDir, tempDir)
-        elif item['PRJ_TYPE'] == 'WTS':
-            FILE_BAM = os.path.join(rawDir,'Expression','STAR_align_exp','.'.join([item['SAMPLE_ID'],'Aligned','sortedByCoord','out','bam']))
-            sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM], forDir, tempDir)
+            # report, summarized
+            if not os.path.isdir(os.path.join(rawDir,'Summary')) :
+                print('Summary folder does not exist. Cancel transfer.: ' + item['SAMPLE_ID'])
+                break
 
+            FILES_SUM = [ os.path.join(rawDir,'Summary',file) for file in Path(os.path.join(rawDir,'Summary')).iterdir() if 'summarized' in file.name ]
+            FILES_REP = [ os.path.join(rawDir,'Summary',item['SAMPLE_ID'] + '.report.'+file) for file in ['pdf','json'] ]
+
+            if item['PRJ_TYPE'] == 'eWES':
+                if not os.path.isdir(os.path.join(rawDir,'Preprocessing','align')) :
+                    print('align folder does not exist. Cancel transfer.: ' + item['SAMPLE_ID'])
+                    break
+
+                FILE_BAM = os.path.join(rawDir,'Preprocessing','align','.'.join([item['SAMPLE_ID'],'tumour','aligned','bam']))
+
+                if not os.path.isdir(os.path.join(rawDir,'SNV','somatic')) :
+                    print('SNV folder does not exist. Cancel transfer.: ' + item['SAMPLE_ID'])
+                    break
+
+                FILE_VCF = os.path.join(rawDir,'SNV','somatic',item['SAMPLE_ID']+'_mutect2_freebayes_lofreq_vote_res.exome.vcf')
+
+                sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM, FILE_VCF], forDir, tempDir)
+
+            elif item['PRJ_TYPE'] == 'WTS':
+                if not os.path.isdir(os.path.join(rawDir,'Expression','STAR_align_exp')) :
+                    print('align folder does not exist. Cancel transfer.: ' + item['SAMPLE_ID'])
+                    break
+
+                FILE_BAM = os.path.join(rawDir,'Expression','STAR_align_exp','.'.join([item['SAMPLE_ID'],'Aligned','sortedByCoord','out','bam']))
+
+                sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM], forDir, tempDir)
 
 
