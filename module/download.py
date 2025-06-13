@@ -57,7 +57,10 @@ def run_download(args):
 
     not_exists = list(set(sampleID) - set(df_info['SAMPLE_ID']))
     if len(not_exists) > 0:
-        init('The following samples have not been uploaded to backup server.\n' + '\n'.join(not_exists))
+        print('The following samples have not been uploaded to backup server.\n' + '\n'.join(not_exists))
+        choice = prompt_choice("Continue? (yes[Y]/no[N]):", ['yes', 'y', 'no', 'n'])
+        if choice in ['no', 'n'] :
+            init('Abort process.')
 
     df_info = df_info[ df_info['SAMPLE_ID'].isin(sampleID) ]
     if df_info.shape[0] == 0 : init("No matching data found.")
