@@ -31,7 +31,8 @@ def main():
 
     # download
     parser_dl = subparsers.add_parser("download", aliases=['dl'], help="Download from backup server.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser_dl.add_argument("--sample","-s", required=True, help='sample IDs to download (comma separated)')
+    parser_dl.add_argument("--sample","-s", required=False, help='sample IDs to download (comma separated)')
+    parser_dl.add_argument("--listfile","-f", required=False, help="List of samples to be download.")
     parser_dl.add_argument("--directory","-d", required=False, help="output directory", default="/data1/work/backup_storage")
     parser_dl.add_argument("--forwarding","-fw", required=False, help="forwarding directory path", default="/data2/backup/result")
     parser_dl.set_defaults(func=run_download)

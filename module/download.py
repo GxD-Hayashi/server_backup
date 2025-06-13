@@ -3,7 +3,7 @@ import sys
 import datetime
 import pandas as pd
 from pathlib import Path
-from .common import *
+from .subfunc import *
 
 tempDir = Path(os.path.abspath(__file__)).parent.parent / "tmp"
 os.makedirs(tempDir, exist_ok=True)
@@ -31,9 +31,26 @@ def copyfiles(files, forward, chsfile, tempDir) :
 
 def run_download(args):
 
-    sampleID = [x.strip() for x in args.sample.split(',') if not x.strip() == '']
+    sampleID = args.sample
+    listfile = args.listfile
     directory = args.directory
     forwarding = args.forwarding
+
+    if listfile is None :
+        if sampleID is None :
+            init('Incorrect argument specified.')
+        else :
+            sampleID = [x.strip() for x in sampleID.split(',') if not x.strip() == '']
+    elif not os.path.isfile(listfile) :
+        init('List file does not exist.')
+    else :
+        with open(listfile, 'r') as f:
+            try:
+                sampleID = f.read().splitlines()
+            except FileNotFoundError as e:
+                init(e)
+
+    sampleID = rmdup_list(sampleID)
 
     df_info = getinfo()
     if df_info.shape[0] == 0 : init("No matching data found.")

@@ -4,7 +4,7 @@ import argparse
 import pandas as pd
 import datetime
 from pathlib import Path
-from .common import *
+from .subfunc import *
 
 tempDir = Path(os.path.abspath(__file__)).parent.parent / "tmp"
 os.makedirs(tempDir, exist_ok=True)
@@ -37,6 +37,9 @@ def run_upload(args):
     forwarding = args.forwarding
     inclusion = [x.strip() for x in args.inclusion.split(',') if not x.strip() == '']
     exclusion = [x.strip() for x in args.exclusion.split(',') if not x.strip() == '']
+
+    inclusion = rmdup_list(inclusion)
+    exclusion = rmdup_list(exclusion)
 
     if len(inclusion) > 0 and len(exclusion) > 0:
         init('ERROR: Inclusion and exclusion cannot be specified simultaneously.')
@@ -111,4 +114,5 @@ def run_upload(args):
 
                 sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM], forDir, tempDir)
 
+            break
 

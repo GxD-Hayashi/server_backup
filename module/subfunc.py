@@ -44,6 +44,10 @@ def SearchDir(batchID, forwarding : Path):
     if len(fcDirs) != 1: return None
     return os.path.basename(fcDirs[-1])
 
+def rmdup_list(lst):
+    seen = set()
+    return [x for x in lst if not (x in seen or seen.add(x))]
+
 def init(msg):
     print(msg)
     sys.exit(1)
