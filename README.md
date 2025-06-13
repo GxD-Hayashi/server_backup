@@ -72,7 +72,7 @@ optional arguments:
 |--forwarding/-fw  |False    |バックアップ先のディレクトリパス　　|/data2/backup/result   |
 
 ## 2\. バックアップデータの復帰（ダウンロード）
-バックアップサーバーに保存したデータを解析サーバーにコピーし、チェックサムを作成する。
+バックアップサーバーに保存したデータを解析サーバーにコピーし、チェックサムを作成するジョブが投入される。
 ### 転送されるデータ
 **【eWES】**
 <img src="https://github.com/user-attachments/assets/988a6b31-d815-4a98-9f0e-06c662997aba" width="1000">
@@ -82,12 +82,14 @@ optional arguments:
 ### オプションの詳細
 ```
 $ singularity exec --disable-cache --bind /data1 $img python $SCRIPT dl --help
-usage: server_backup.py download [-h] --sample SAMPLE [--directory DIRECTORY] [--forwarding FORWARDING]
-
+usage: server_backup.py download [-h] [--sample SAMPLE] [--listfile LISTFILE] [--directory DIRECTORY]
+                                 [--forwarding FORWARDING]
 optional arguments:
   -h, --help            show this help message and exit
   --sample SAMPLE, -s SAMPLE
                         sample IDs to download (comma separated) (default: None)
+  --listfile LISTFILE, -f LISTFILE
+                        List of samples to be download. (default: None)
   --directory DIRECTORY, -d DIRECTORY
                         output directory (default: /data1/work/backup_storage)
   --forwarding FORWARDING, -fw FORWARDING
@@ -95,7 +97,9 @@ optional arguments:
 ```
 | option          |required | 概要                               |default                    |
 |:----------------|:-------:|:-----------------------------------|:--------------------------|
-|--sample/-s      |True     |Sample ID。カンマ区切りで複数指定可能 |None                       |
+|--sample/-s      |False*   |Sample ID。カンマ区切りで複数指定可能 |None                       |
+|--listfile/-f    |False*   |downloadするSample IDリストのファイルパス。<br>Sample IDを1列に記載する |None |
 |--directory/-d   |False    |データを復帰させる場所               |/data1/work/backup_storage |
 |--forwarding/-fw |False    |バックアップ先のディレクトリパス      |/data2/backup/result       |
 
+***--sample または --listfile のいずれか1つを指定する。**\
