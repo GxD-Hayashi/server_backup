@@ -49,8 +49,16 @@ def run_upload(args):
 
     if len(inclusion) > 0:
         print ("inclusion sample:" + "\n".join(inclusion))
+
         df_info = df_info[ df_info['SAMPLE_ID'].isin(inclusion) ]
         if df_info.shape[0] == 0 : init("No corresponding sample IDs.")
+
+        not_exists = list(set(inclusion) - set(df_info['SAMPLE_ID']))
+        if len(not_exists) > 0:
+            print('The following samples have no data in the analysis folder.\n' + '\n'.join(not_exists))
+            choice = prompt_choice("Continue? (yes[Y]/no[N]):", ['yes', 'y', 'no', 'n'])
+            if choice in ['no', 'n'] :
+                init('Abort process.')
 
     if len(exclusion) > 0:
         print ("exclusion sample:" + "\n".join(exclusion))
