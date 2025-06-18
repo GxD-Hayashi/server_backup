@@ -1,18 +1,20 @@
 # server_backup
-解析サーバーからバックアップサーバーに解析データをコピー(upload)、またはバックアップしたデータを解析サーバにコピー(download)する。
+解析サーバーからバックアップサーバーに解析データをコピー(upload)、またはバックアップしたデータを解析サーバにコピー(download)する。指定されたsample IDやflowcell IDから検体情報をデータベースに問合せ、CAPサーバ/バックアップサーバ内のファイルを検索して転送するため、データベースに登録がない検体や、規程の場所にファイルがない検体に対しては実行できません。
 | command     | 概要                                                   |
 |:------------|:-------------------------------------------------------|
 |upload, up   |解析サーバーからバックアップサーバーに解析データをコピーする |
 |download, dl |バックアップしたデータを解析サーバにコピーする              |
 
-## 変数の定義(共通)
+## エイリアスの作成 ※ 初回のみ
+~/bin フォルダ直下に以下のコマンドを記載したテキストファイル worksheet を作成し、実行権限を付与する。
+エイリアスを作成しない場合は、singularity でコンテナとスクリプトファイルを指定して実行する。
+（gxd_pipeline, guest_user ユーザーには実装済み）
 ```
-img=/data1/labTools/labTools.sif
-SCRIPT=/data1/labTools/server_backup/latest/server_backup.py
+singularity exec --disable-cache --bind /data1 --bind /data2 /data1/labTools/labTools.sif python /data1/labTools/server_backup/latest/server_backup.py $@
 ```
-マニュアルの表示（全体）
+helpページを表示してエイリアスの設定を確認する。以下が表示されればOK。
 ```
-$ singularity exec --disable-cache --bind /data1 $img python $SCRIPT --help
+$ server_backup -h
 usage: server_backup.py [-h] [--version] {upload,up,download,dl} ...
 
 upload/download to/from backup server.
@@ -28,25 +30,28 @@ optional arguments:
 ```
 コマンド別の詳細表示
 ```
-singularity exec --disable-cache --bind /data1 $img python $SCRIPT <command> --help
+server_backup <command> --help
 ```
 
 ## 1\. データのバックアップ（アップロード）
 解析時に作成されたデータをバックアップサーバーにコピーし、チェックサムを作成する。
+```
+server_backup upload --flowcellid <flowcellid>
+server_backup up -fc <flowcellid>
+```
 ### 転送されるデータ
 **【eWES】**
 <img src="https://github.com/user-attachments/assets/ecc3234c-697f-40ed-94b2-be9ffd26a245" width="1000">
 
 **【WTS】**
 <img src="https://github.com/user-attachments/assets/8a44e398-ef35-470d-8eca-f4e920f1f760" width="1000"> \
-*転送するデータが1つでも足りない場合、当該検体はスキップする。
+※ 転送するデータが1つでも足りない場合、当該検体はスキップする。
 
 ### オプションの詳細
 ```
-$ singularity exec --disable-cache --bind /data1 $img python $SCRIPT up --help
-usage: server_backup.py upload [-h] --flowcellid FLOWCELLID [--project_type {both,WTS,eWES}] [--inclusion INCLUSION] [--exclusion EXCLUSION]
-                               [--directory DIRECTORY] [--forwarding FORWARDING]
-
+$ server_backup up --help
+usage: server_backup.py upload [-h] --flowcellid FLOWCELLID [--project_type {both,WTS,eWES}] [--inclusion INCLUSION] 
+                               [--exclusion EXCLUSION] [--directory DIRECTORY] [--forwarding FORWARDING]
 optional arguments:
   -h, --help            show this help message and exit
   --flowcellid FLOWCELLID, -fc FLOWCELLID
@@ -73,6 +78,15 @@ optional arguments:
 
 ## 2\. バックアップデータの復帰（ダウンロード）
 バックアップサーバーに保存したデータを解析サーバーにコピーし、チェックサムを作成するジョブが投入される。
+```
+server_backup download --sample <samples>
+server_backup dl -s <samples>
+```
+または
+```
+server_backup download --listfile <sample listfile path>
+server_backup dl -f <sample listfile path>
+```
 ### 転送されるデータ
 **【eWES】**
 <img src="https://github.com/user-attachments/assets/988a6b31-d815-4a98-9f0e-06c662997aba" width="1000">
@@ -81,9 +95,9 @@ optional arguments:
 <img src="https://github.com/user-attachments/assets/6bffbd1d-6b5c-496b-bc07-19c167a7f27b" width="1000"> 
 ### オプションの詳細
 ```
-$ singularity exec --disable-cache --bind /data1 $img python $SCRIPT dl --help
-usage: server_backup.py download [-h] [--sample SAMPLE] [--listfile LISTFILE] [--directory DIRECTORY]
-                                 [--forwarding FORWARDING]
+$ server_backup download --help
+usage: server_backup.py download [-h] [--sample SAMPLE] [--listfile LISTFILE]
+                                 [--directory DIRECTORY] [--forwarding FORWARDING]
 optional arguments:
   -h, --help            show this help message and exit
   --sample SAMPLE, -s SAMPLE
@@ -102,4 +116,4 @@ optional arguments:
 |--directory/-d   |False    |データを復帰させる場所               |/data1/work/backup_storage |
 |--forwarding/-fw |False    |バックアップ先のディレクトリパス      |/data2/backup/result       |
 
-***--sample または --listfile のいずれか1つを指定する。**\
+***--sample または --listfile のいずれか1つを指定する。**
