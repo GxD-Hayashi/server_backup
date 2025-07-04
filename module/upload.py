@@ -47,6 +47,15 @@ def run_upload(args):
     df_info = getinfo(flowcellid)
     if df_info.shape[0] == 0 : init("No matching data found.")
 
+    if project_type == "both" :
+        TYPES = ['eWES','WTS']
+    else :
+        TYPES = [project_type]
+
+    df_info['PRJ_TYPE'] = df_info['PRJ_TYPE'].str.replace('EWES',"eWES")
+    df_info = df_info[ df_info['PRJ_TYPE'].isin(TYPES) ]
+    if df_info.shape[0] == 0 : init("Test type error: no sample ID corresponds.")
+
     if len(inclusion) > 0:
         print ("inclusion sample:" + "\n".join(inclusion))
 
@@ -65,14 +74,12 @@ def run_upload(args):
         df_info = df_info[ ~df_info['SAMPLE_ID'].isin(exclusion) ]
         if df_info.shape[0] == 0 : init("No corresponding sample IDs.")
 
-    if project_type == "both" :
-        TYPES = ['eWES','WTS']
-    else :
-        TYPES = [project_type]
-
-    df_info['PRJ_TYPE'] = df_info['PRJ_TYPE'].str.replace('EWES',"eWES")
-    df_info = df_info[ df_info['PRJ_TYPE'].isin(TYPES) ]
-    if df_info.shape[0] == 0 : init("Test type error: no sample ID corresponds.")
+    working = df_info[ df_info['ANAL_STATUS']!='102' ]
+    if working.shape[0] > 0 :
+        print('Analysis in progress: [' + ','.join(working['SAMPLE_ID']) + ']')
+        choice = prompt_choice("Continue? (yes[Y]/no[N]):", ['yes', 'y', 'no', 'n'])
+        if choice in ['no', 'n'] : init('Abort process.')
+        df_info = df_info[ df_info['ANAL_STATUS']=='102' ]
 
     df_info = df_info.sort_values('SAMPLE_ID')
     for i, item in df_info.iterrows() :
