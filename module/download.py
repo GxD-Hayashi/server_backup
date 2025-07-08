@@ -29,6 +29,17 @@ def copyfiles(files, forward, chsfile, tempDir) :
     os.system(qsubCmd)
     os.system("sleep 0.1")
 
+def checkfile(filepath) :
+    if os.path.isfile(filepath) :
+        return filepath
+    else :
+        print("Not exists file: " + os.path.basename(filepath))
+        choice = prompt_choice("Skip this sample? (skip[S]/continue[C]): ",['skip','s','continue','c'])
+        if choice in ['skip','s'] :
+            return None
+        else :
+            return ''
+
 def run_download(args):
 
     sampleID = args.sample
@@ -86,10 +97,20 @@ def run_download(args):
         if item['PRJ_TYPE'] == 'eWES':
             FILE_BAM = os.path.join(rawDir, '.'.join([item['SAMPLE_ID'],'tumour','aligned','bam']))
             FILE_VCF = os.path.join(rawDir, item['SAMPLE_ID']+'_mutect2_freebayes_lofreq_vote_res.exome.vcf')
+
+            FILE_BAM = checkfile(FILE_BAM)
+            if FILE_BAM is None : continue
+
+            FILE_VCF = checkfile(FILE_VCF)
+            if FILE_VCF is None : continue
+
             copyfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM, FILE_VCF], forDir, chsfile, tempDir)
 
         elif item['PRJ_TYPE'] == 'WTS':
             FILE_BAM = os.path.join(rawDir, '.'.join([item['SAMPLE_ID'],'Aligned','sortedByCoord','out','bam']))
+            FILE_BAM = checkfile(FILE_BAM)
+            if FILE_BAM is None : continue
+
             copyfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM], forDir, chsfile, tempDir)
 
 
