@@ -52,7 +52,7 @@ server_backup up -fc <flowcellid>
 ```
 $ server_backup up --help
 usage: server_backup.py upload [-h] --flowcellid FLOWCELLID [--project_type {both,WTS,eWES}] [--inclusion INCLUSION] 
-                               [--exclusion EXCLUSION] [--directory DIRECTORY] [--forwarding FORWARDING]
+                               [--exclusion EXCLUSION] [--directory DIRECTORY] [--forwarding FORWARDING] [--preparation]
 optional arguments:
   -h, --help            show this help message and exit
   --flowcellid FLOWCELLID, -fc FLOWCELLID
@@ -67,6 +67,7 @@ optional arguments:
                         parent analytical directory (default: /data1/data/result)
   --forwarding FORWARDING, -fw FORWARDING
                         forwarding directory path (default: /data2/backup/result)
+  --preparation, -p     Only transfer large files (default: False)
 ```
 | option           |required | 概要           |default            |
 |:-----------------|:-------:|:---------------|:------------------|
@@ -76,6 +77,7 @@ optional arguments:
 |--exclusion/-e    |False    |除外するSample IDを指定。カンマ区切りで複数指定可能         |None |
 |--directory/-d    |False    |解析フォルダの親ディレクトリ        |/data1/data/result     |
 |--forwarding/-fw  |False    |バックアップ先のディレクトリパス　　|/data2/backup/result   |
+|--preparation/-p  |False    |大きいデータ(fastq.gz,bam,vcf)の転送のみ実行 | False        |
 
 <a id="DL"></a>
 ## 2\. バックアップデータの復帰（ダウンロード）

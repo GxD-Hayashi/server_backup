@@ -9,7 +9,7 @@ from .subfunc import *
 tempDir = Path(os.path.abspath(__file__)).parent.parent / "tmp"
 os.makedirs(tempDir, exist_ok=True)
 
-def sendfiles(files, forward: Path, tempDir) :
+def sendfiles(files, forward: Path, tempDir, pre) :
     now = datetime.datetime.now()
     time_str = now.strftime("%d%H%M%S") + str(now.microsecond)
     listpath = os.path.join(tempDir, f".{time_str}.list")
@@ -19,15 +19,19 @@ def sendfiles(files, forward: Path, tempDir) :
     f.close()
 
     os.makedirs(forward, exist_ok=True, mode=0o777)
-    copyCmd = f"rsync -azruL --no-relative --files-from={listpath} / {forward}/ && "
+    copyCmd = f"rsync -azruL --no-relative --files-from={listpath} / {forward}/ && touch {ckspath} && "
     chkCmd = f"cd  {forward}/ && if [ -s \"checksum\" ]; then rm checksum; fi && md5sum ./* > {ckspath} && "
     mvCmd = f"mv -f {ckspath} {forward}/checksum && "
     endCmd = f"rm -f {listpath} {ckspath}"
-    cmd = copyCmd + chkCmd + mvCmd + endCmd
+
+    if pre :
+        cmd = copyCmd + endCmd
+    else :
+        cmd = copyCmd + chkCmd + mvCmd + endCmd
 
     qsubCmd = f"/data1/apps/sge/bin/lx-amd64/qsub -N BK_{time_str} -q all.q -pe smp 2 -o /dev/null -e /dev/null << EOF\n{cmd}\nEOF"
     os.system(qsubCmd)
-    os.system("sleep 0.1")
+    os.system("sleep 1")
 
 def run_upload(args):
 
@@ -35,6 +39,7 @@ def run_upload(args):
     directory = args.directory
     project_type = args.project_type
     forwarding = args.forwarding
+    preparation = args.preparation
     inclusion = [x.strip() for x in args.inclusion.split(',') if not x.strip() == '']
     exclusion = [x.strip() for x in args.exclusion.split(',') if not x.strip() == '']
 
@@ -97,13 +102,14 @@ def run_upload(args):
 
             FILES_FQ = [ os.path.join(rawDir,'Fastq',file) for file in Path(os.path.join(rawDir,'Fastq')).iterdir() if file.name.endswith('fastq.gz') ]
 
-            # report, summarized
-            if not os.path.isdir(os.path.join(rawDir,'Summary')) :
-                print('Summary folder does not exist. Cancel transfer.: ' + item['SAMPLE_ID'])
-                break
+            if not preparation :
+                # report, summarized
+                if not os.path.isdir(os.path.join(rawDir,'Summary')) :
+                    print('Summary folder does not exist. Cancel transfer.: ' + item['SAMPLE_ID'])
+                    break
 
-            FILES_SUM = [ os.path.join(rawDir,'Summary',file) for file in Path(os.path.join(rawDir,'Summary')).iterdir() if 'summarized' in file.name ]
-            FILES_REP = [ os.path.join(rawDir,'Summary',item['SAMPLE_ID'] + '.report.'+file) for file in ['pdf','json'] ]
+                FILES_SUM = [ os.path.join(rawDir,'Summary',file) for file in Path(os.path.join(rawDir,'Summary')).iterdir() if 'summarized' in file.name ]
+                FILES_REP = [ os.path.join(rawDir,'Summary',item['SAMPLE_ID'] + '.report.'+file) for file in ['pdf','json'] ]
 
             if item['PRJ_TYPE'] == 'eWES':
                 if not os.path.isdir(os.path.join(rawDir,'Preprocessing','align')) :
@@ -118,7 +124,10 @@ def run_upload(args):
 
                 FILE_VCF = os.path.join(rawDir,'SNV','somatic',item['SAMPLE_ID']+'_mutect2_freebayes_lofreq_vote_res.exome.vcf')
 
-                sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM, FILE_VCF], forDir, tempDir)
+                if preparation :
+                    sendfiles(FILES_FQ + [FILE_BAM, FILE_VCF], forDir, tempDir, preparation)
+                else :
+                    sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM, FILE_VCF], forDir, tempDir, preparation)
 
             elif item['PRJ_TYPE'] == 'WTS':
                 if not os.path.isdir(os.path.join(rawDir,'Expression','STAR_align_exp')) :
@@ -127,7 +136,10 @@ def run_upload(args):
 
                 FILE_BAM = os.path.join(rawDir,'Expression','STAR_align_exp','.'.join([item['SAMPLE_ID'],'Aligned','sortedByCoord','out','bam']))
 
-                sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM], forDir, tempDir)
+                if preparation :
+                    sendfiles(FILES_FQ + [FILE_BAM], forDir, tempDir, preparation)
+                else:
+                    sendfiles(FILES_FQ + FILES_SUM + FILES_REP + [FILE_BAM], forDir, tempDir, preparation)
 
             break
 

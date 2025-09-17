@@ -27,6 +27,7 @@ def main():
     parser_ul.add_argument("--exclusion","-e", required=False, help="sample IDs to exclude (comma separated)", default="")
     parser_ul.add_argument("--directory","-d", required=False, help="parent analytical directory", default="/data1/data/result")
     parser_ul.add_argument("--forwarding","-fw", required=False, help="forwarding directory path", default="/data2/backup/result")
+    parser_ul.add_argument("--preparation","-p", required=False, help="Only transfer large files", action='store_true')
     parser_ul.set_defaults(func=run_upload)
 
     # download
