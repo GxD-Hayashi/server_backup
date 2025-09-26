@@ -46,7 +46,8 @@ server_backup up -fc <flowcellid>
 
 **【WTS】**
 <img src="https://github.com/user-attachments/assets/8a44e398-ef35-470d-8eca-f4e920f1f760" width="1000"> \
-※ 転送するデータが1つでも足りない場合、当該検体はスキップする。
+※ 転送するデータが1つでも足りない場合、当該検体はスキップする。\
+※ ANAL_STATUSが102以外の検体が含まれていた場合、作業続行するかどうか聞かれる。Yesを選択すると当該検体を除いて転送作業を続行し、Noを選択すると終了する。
 
 ### オプションの詳細
 ```
