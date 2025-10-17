@@ -29,7 +29,7 @@ def sendfiles(files, forward: Path, tempDir, pre) :
     else :
         cmd = copyCmd + chkCmd + mvCmd + endCmd
 
-    qsubCmd = f"/data1/apps/sge/bin/lx-amd64/qsub -N BK_{time_str} -q all.q -pe smp 2 -o /dev/null -e /dev/null << EOF\n{cmd}\nEOF"
+    qsubCmd = f"/data1/apps/sge/bin/lx-amd64/qsub -N BK_{time_str} -q all.q -pe smp 7 -o /dev/null -e /dev/null << EOF\n{cmd}\nEOF"
     os.system(qsubCmd)
     os.system("sleep 1")
 
