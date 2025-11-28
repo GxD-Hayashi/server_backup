@@ -1,12 +1,12 @@
 # server_backup
-解析サーバーからバックアップサーバーに解析データをコピー(upload)、またはバックアップしたデータを解析サーバにコピー(download)する。指定されたsample IDやflowcell IDから検体情報をデータベースに問合せ、CAPサーバ/バックアップサーバ内のファイルを検索して転送するため、データベースに登録がない検体や、規程の場所にファイルがない検体に対しては実行できません。\
-**なお、データベースの設計内容が不明なため、データベース検索時に想定外の動作を行う可能性があります。**
-**また、このツールは正式な検証を経ていません。不具合等が生じた場合は適宜修正するか、[バックアップサーバーへ転送されるデータ](https://github.com/mkaba-gxd/server_backup/tree/v2.0.0?tab=readme-ov-file#転送されるデータ)または[バックアップサーバーから復帰させるデータ](https://github.com/mkaba-gxd/server_backup/tree/v2.0.0?tab=readme-ov-file#転送されるデータ-1)を参照して該当データを手動でrsync転送してください**
+CAP storageからbackup storageに解析データをコピー(upload)、またはバックアップしたデータをCAP storageにコピー(download)する。指定されたsample IDやflowcell IDから検体情報をデータベースに問合せ、CAP storage/backup storage内のファイルを検索して転送するため、データベースに登録がない検体や、規程の場所にファイルがない検体に対しては実行できません。\
+なお、**データベースの設計内容が不明なため、データベース検索時に想定外の動作を行う可能性があります。**\
+また、**このツールは正式な検証を経ていません。** 不具合等が生じた場合は適宜修正するか、[backup storageへ転送されるデータ](https://github.com/mkaba-gxd/server_backup/tree/v2.0.0?tab=readme-ov-file#転送されるデータ)または[backup storageから復帰させるデータ](https://github.com/mkaba-gxd/server_backup/tree/v2.0.0?tab=readme-ov-file#転送されるデータ-1)を参照して該当データを手動でrsync転送してください。
 
-| command          | 概要                                                   |
-|:-----------------|:-------------------------------------------------------|
-|[upload, up](#UP)   |解析サーバーからバックアップサーバーに解析データをコピーする |
-|[download, dl](#DL) |バックアップしたデータを解析サーバにコピーする              |
+| command          | 概要                                                     |
+|:-----------------|:---------------------------------------------------------|
+|[upload, up](#UP)   |CAP storageからbackup storageに解析データをコピーする |
+|[download, dl](#DL) |バックアップしたデータをCAP storageサーバにコピーする      |
 
 ## エイリアスの作成 ※ 初回のみ
 ~/bin フォルダ直下に以下のコマンドを記載したテキストファイル worksheet を作成し、実行権限を付与する。
@@ -37,7 +37,7 @@ server_backup <command> --help
 ```
 <a id="UP"></a>
 ## 1\. データのバックアップ（アップロード）
-解析時に作成されたデータをバックアップサーバーにコピーし、チェックサムを作成する。
+解析時に作成されたデータをbackup storageにコピーし、チェックサムを作成する。
 ```
 server_backup upload --flowcellid <flowcellid>
 server_backup up -fc <flowcellid>
@@ -85,7 +85,7 @@ optional arguments:
 
 <a id="DL"></a>
 ## 2\. バックアップデータの復帰（ダウンロード）
-バックアップサーバーに保存したデータを解析サーバーにコピーし、チェックサムを作成するジョブが投入される。
+backup storageに保存したデータをCAP storageにコピーし、チェックサムを作成するジョブが投入される。
 ```
 server_backup download --sample <samples>
 server_backup dl -s <samples>
