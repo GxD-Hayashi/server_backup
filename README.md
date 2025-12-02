@@ -2,7 +2,7 @@
 CAP storageからbackup storageに解析データをコピー(upload)、またはバックアップしたデータをCAP storageにコピー(download)する。\
 指定された sample ID や flowcell ID から検体情報をデータベースに問い合せ、CAP storage/backup storage内のファイルを検索して転送します。そのためデータベースに登録がない検体や、規程の場所に中間ファイルがない検体に対しては実行できません。\
 **データベースの設計内容が不明なため、データベース検索時に想定外の動作を行う可能性があります。**\
-**このツールは正式な検証を経ていません。** 不具合等が生じた場合は適宜修正するか、[backup storageへ転送されるデータ](https://github.com/mkaba-gxd/server_backup/tree/v2.0.0?tab=readme-ov-file#転送されるデータ)または[backup storageから復帰させるデータ](https://github.com/mkaba-gxd/server_backup/tree/v2.0.0?tab=readme-ov-file#転送されるデータ-1)を参照して該当データを手動でrsync転送してください。
+**このツールは正式な検証を経ていません。** 不具合等が生じた場合は適宜修正するか、[backup storageへ転送されるデータ](https://github.com/mkaba-gxd/server_backup/tree/v2.0.0?tab=readme-ov-file#転送されるデータ)または[backup storageから復帰させるデータ](https://github.com/mkaba-gxd/server_backup/tree/v2.0.0?tab=readme-ov-file#転送されるデータ-1)を参照して、該当データを手動でrsync転送してください。
 
 | command          | 概要                                                     |
 |:-----------------|:---------------------------------------------------------|
