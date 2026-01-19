@@ -10,9 +10,13 @@ CAP storageからbackup storageに解析データをコピー(upload)、また�
 |[download, dl](#DL) |バックアップしたデータをCAP storageサーバにコピーする      |
 
 ## エイリアスの作成 ※ 初回のみ
+**gxd_pipeline, guest_user ユーザーには実装済みですので、実行しなくて良いです。**\
 ~/bin フォルダ直下に以下のコマンドを記載したテキストファイル worksheet を作成し、実行権限を付与する。
-エイリアスを作成しない場合は、singularity でコンテナとスクリプトファイルを指定して実行する。
-（gxd_pipeline, guest_user ユーザーには実装済み）
+<details>
+  <summary> 
+    More Details
+  </summary>
+  
 ```
 singularity exec --disable-cache --bind /data1 --bind /data2 /data1/labTools/labTools.sif python /data1/labTools/server_backup/latest/server_backup.py $@
 ```
@@ -36,6 +40,10 @@ optional arguments:
 ```
 server_backup <command> --help
 ```
+エイリアスを作成しない場合は、singularity でコンテナとスクリプトファイルを指定して実行する。
+
+</details>
+
 <a id="UP"></a>
 ## 1\. データのバックアップ（アップロード）
 解析時に作成されたデータをbackup storageにコピーし、チェックサムを作成する。
