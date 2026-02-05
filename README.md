@@ -46,7 +46,7 @@ server_backup <command> --help
 
 <a id="UP"></a>
 ## 1\. データのバックアップ（アップロード）
-解析時に作成されたデータをbackup storageにコピーし、チェックサムを作成する。
+解析時に作成されたデータをbackup storageにコピーし、チェックサムを作成するジョブがSampleID毎に投入される。
 ```
 server_backup upload --flowcellid <flowcellid>
 server_backup up -fc <flowcellid>
@@ -60,7 +60,12 @@ server_backup up -fc <flowcellid>
 ※ レポートの修正を行った場合、修正前後の \<sampleID\>.summarized.*.tsv ファイルが転送される。\
 ※ 転送するデータが1つでも足りない場合、当該検体はスキップする。\
 ※ ANAL_STATUSが102以外の検体が含まれていた場合、作業続行するかどうか聞かれる。Yesを選択すると当該検体を除いて転送作業を続行し、Noを選択すると終了する。
-
+### 正常終了の確認方法
+バックアップ先のフォルダ（デフォルトでは /data2/backup/result/[eWES/WTS]/[batch folder]/[Sample ID]/）にchecksumファイルが存在することを確認する。\
+qstatでバックアップジョブ(BK_*)が実行されていないことを確認後、以下のコマンドを実行して表示された数値と検体数が合致していればOK。
+```
+ls /data2/backup/result/[eWES/WTS]/[batch folder]/*/checksum | wc -l
+```
 ### オプションの詳細
 ```
 $ server_backup up --help
